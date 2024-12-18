@@ -1,4 +1,4 @@
-package com.appservice.demo;
+package com.appservice.main;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,8 +16,8 @@ public class AppServiceApplication {
 	}
 	
 	 @GetMapping("/hello")
-	    public String hello(@RequestParam(name = "getHello") String hello) {
-		return String.format("Hello %s!", hello);
+	    public String hello() {
+		return String.format("Hello");
 	    }
 
 }
