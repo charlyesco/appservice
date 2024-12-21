@@ -32,6 +32,7 @@
 		<mysql.connector.java>8.0.21</mysql.connector.java>
 		<hibernate.core>6.6.3.Final</hibernate.core>
 		<springboot.starter.data.jpa>3.4.0</springboot.starter.data.jpa>
+		<springdoc.openapi.starter>2.0.2</springdoc.openapi.starter>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -69,7 +70,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.0.2</version>
+			<version>${springdoc.openapi.starter}</version>
 		</dependency>
 	</dependencies>
 
