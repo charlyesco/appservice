@@ -7,53 +7,52 @@ import jakarta.persistence.Id;
 
 //IMPORTANTE anadir el nombre de la tabla
 @Entity(name = "personas")
-public class Persona {
+public class PersonaEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer idPersona;
+	private Integer id;
 
-	private String nomPersona;
+	private String nombre;
 
-	private String apellidoPersona;
+	private String apellido;
 
-	public Persona() {
+	public PersonaEntity() {
 	}
 
-	public Persona(Integer idPersona, String nomPersona, String apellidoPersona) {
-		this.idPersona = idPersona;
-		this.nomPersona = nomPersona;
-		this.apellidoPersona = apellidoPersona;
+	public PersonaEntity(Integer idPersona, String nomPersona, String apellidoPersona) {
+		this.id = idPersona;
+		this.nombre = nomPersona;
+		this.apellido = apellidoPersona;
 	}
 
 	public Integer getIdPersona() {
-		return idPersona;
+		return id;
 	}
 
 	public void setIdPersona(Integer idPersona) {
-		this.idPersona = idPersona;
+		this.id = idPersona;
 	}
 
 	public String getNomPersona() {
-		return nomPersona;
+		return nombre;
 	}
 
 	public void setNomPersona(String nomPersona) {
-		this.nomPersona = nomPersona;
+		this.nombre = nomPersona;
 	}
 
 	public String getApellidoPersona() {
-		return apellidoPersona;
+		return apellido;
 	}
 
 	public void setApellidoPersona(String apellidoPersona) {
-		this.apellidoPersona = apellidoPersona;
+		this.apellido = apellidoPersona;
 	}
 
 	@Override
 	public String toString() {
-		return "Persona [idPersona=" + idPersona + ", nomPersona=" + nomPersona + ", apellidoPersona=" + apellidoPersona
-				+ "]";
+		return "Persona [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + "]";
 	}
 
 }
