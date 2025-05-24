@@ -26,14 +26,15 @@ public class MysqlController {
 	@Tag(name = "get", description = "POST Read personas ddbb")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/readPersonas")
-	public ResponseEntity<String> readPersonas(Principal principal, Authentication authentication) {
+	public ResponseEntity<String> readPersonas(Principal principal, Authentication authentication,String hola) {
+		System.out.print("variable: "+hola);
 		return ResponseEntity.ok(mysqlService.getPersona());
 	}
 
 	@Tag(name = "post", description = "POST Insert personas ddbb")
 	@PostMapping("/insertPersonas")
-	public ResponseEntity<String> insertPersonas(@RequestParam(name = "username") String username,
-			@RequestParam(name = "pass") String pass) {
+	public ResponseEntity<String> insertPersonas(String username,
+			String pass) {
 		LoginEntity login = new LoginEntity();
 		login.setUsername(username);
 		login.setRoles("USER");
