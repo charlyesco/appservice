@@ -1,18 +1,18 @@
 package com.appservice.main.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.appservice.main.entity.LoginEntity;
-import com.appservice.main.entity.PersonaEntity;
 import com.appservice.main.service.MysqlService;
 import com.appservice.main.util.Util;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -24,7 +24,7 @@ public class MysqlController {
 
 	@Tag(name = "get", description = "POST Read personas ddbb")
 	@GetMapping("/readPersonas")
-	public ResponseEntity<String> readPersonas() {
+	public ResponseEntity<String> readPersonas(Principal principal,Authentication authentication) {
 		return ResponseEntity.ok(mysqlService.getPersona());
 	}
 

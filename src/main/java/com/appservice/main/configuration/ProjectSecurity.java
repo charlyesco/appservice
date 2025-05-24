@@ -27,35 +27,36 @@ public class ProjectSecurity {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf
-		        .ignoringRequestMatchers("/appservice/login"))
-				.authorizeHttpRequests((auth) -> auth
-			       .requestMatchers("/mysql/**")
-			       // POR DEFECTO SPRING ANADE ROLE
-                   .hasRole("USER")
-                   .requestMatchers("/appservice/login", "/error").permitAll()
-                   .anyRequest().authenticated())
-				.formLogin(form -> form
-		                .loginPage("/login")  // Página de login personalizada si es necesario
-		                .defaultSuccessUrl("/home", true)  // Redirige a "/home" después del login exitoso
-		                .permitAll())
-				   .httpBasic(Customizer.withDefaults())
-				   .exceptionHandling(exception -> 
-                   exception.accessDeniedPage("/error"))  // Página de error personalizada
-				   .build();
-
-	}
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return    http
+            .csrf(csrf -> csrf.disable())  // Deshabilitar CSRF para simplificar pruebas de CRUD
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/public/**").permitAll()  // Permitir acceso público a ciertas rutas
+                .requestMatchers("/admin/**").hasRole("ADMIN")  // Restringir acceso a rutas de admin
+                .anyRequest().authenticated())  // Requiere autenticación para cualquier otra ruta
+            .formLogin(Customizer.withDefaults())
+            .httpBasic(Customizer.withDefaults())
+            .build();
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
     	 return  new BCryptPasswordEncoder();
     }
-    @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults("");
-    }
+
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsService() {
+//        UserDetails user = User.withUsername("user")
+//            .password(passwordEncoder().encode("password"))
+//            .roles("USER")
+//            .build();
+//        UserDetails admin = User.withUsername("admin")
+//            .password(passwordEncoder().encode("admin"))
+//            .roles("ADMIN")
+//            .build();
+//        return new InMemoryUserDetailsManager(user, admin);
+//    }
 	
     @Bean
     AuthenticationProvider authenticationProvider(){
