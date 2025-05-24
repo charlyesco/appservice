@@ -8,13 +8,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.appservice.main.entity.LoginEntity;
 import com.appservice.main.service.MysqlService;
 import com.appservice.main.util.Util;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "MysqlController", description = "CRUD personas ddbb")
 @RestController
 @RequestMapping("/mysql")
 public class MysqlController {
@@ -23,7 +23,6 @@ public class MysqlController {
 	MysqlService mysqlService;
 
 	//sin tag @PreAuthorize el metodo es publico
-	@Tag(name = "get", description = "POST Read personas ddbb")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/readPersonas")
 	public ResponseEntity<String> readPersonas(Principal principal, Authentication authentication,String hola) {
@@ -31,7 +30,6 @@ public class MysqlController {
 		return ResponseEntity.ok(mysqlService.getPersona());
 	}
 
-	@Tag(name = "post", description = "POST Insert personas ddbb")
 	@PostMapping("/insertPersonas")
 	public ResponseEntity<String> insertPersonas(String username,
 			String pass) {
@@ -42,13 +40,12 @@ public class MysqlController {
 		return ResponseEntity.ok("Result: " + mysqlService.insertLogin(login));
 	}
 
-	@Tag(name = "post", description = "POST Select personas ddbb")
 	@PostMapping("/updatePersonas")
 	public ResponseEntity<String> updatePersonas() {
 		return ResponseEntity.ok("Success");
 	}
 
-	@Tag(name = "post", description = "POST Select personas ddbb")
+	
 	@PostMapping("/deletePersonas")
 	public ResponseEntity<String> deletePersonas() {
 		return ResponseEntity.ok("Success");
