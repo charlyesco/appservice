@@ -3,6 +3,7 @@ package com.appservice.main.controller;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,9 @@ public class MysqlController {
 	@Autowired
 	MysqlService mysqlService;
 
+	//sin tag @PreAuthorize el metodo es publico
 	@Tag(name = "get", description = "POST Read personas ddbb")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/readPersonas")
 	public ResponseEntity<String> readPersonas(Principal principal, Authentication authentication) {
 		return ResponseEntity.ok(mysqlService.getPersona());
