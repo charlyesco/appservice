@@ -14,7 +14,7 @@ public class MysqlServiceImpl implements MysqlService {
 
 	@Autowired
 	private PersonasRepository personasRepository;
-	
+
 	@Autowired
 	private LoginRepository loginRepository;
 
@@ -28,7 +28,7 @@ public class MysqlServiceImpl implements MysqlService {
 		}
 		return "OK: " + list.get(0).toString();
 	}
-	
+
 	@Override
 	public boolean insertLogin(LoginEntity persona) {
 		try {

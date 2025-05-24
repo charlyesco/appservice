@@ -1,7 +1,6 @@
 package com.appservice.main.controller;
 
 import java.security.Principal;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,18 +23,19 @@ public class MysqlController {
 
 	@Tag(name = "get", description = "POST Read personas ddbb")
 	@GetMapping("/readPersonas")
-	public ResponseEntity<String> readPersonas(Principal principal,Authentication authentication) {
+	public ResponseEntity<String> readPersonas(Principal principal, Authentication authentication) {
 		return ResponseEntity.ok(mysqlService.getPersona());
 	}
 
 	@Tag(name = "post", description = "POST Insert personas ddbb")
 	@PostMapping("/insertPersonas")
-	public ResponseEntity<String> insertPersonas(@RequestParam(name = "username") String username,@RequestParam(name = "pass")String pass ) {
+	public ResponseEntity<String> insertPersonas(@RequestParam(name = "username") String username,
+			@RequestParam(name = "pass") String pass) {
 		LoginEntity login = new LoginEntity();
 		login.setUsername(username);
 		login.setRoles("USER");
 		login.setPassword(Util.encondePass(pass));
-		return ResponseEntity.ok("Result: "+mysqlService.insertLogin(login));
+		return ResponseEntity.ok("Result: " + mysqlService.insertLogin(login));
 	}
 
 	@Tag(name = "post", description = "POST Select personas ddbb")

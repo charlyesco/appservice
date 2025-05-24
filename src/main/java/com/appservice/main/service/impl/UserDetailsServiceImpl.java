@@ -1,8 +1,6 @@
 package com.appservice.main.service.impl;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +24,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		LoginEntity loginEntity = user.get(0);
 		loginEntity.setPassword(Util.encondePass(loginEntity.getPassword()));
 //		return user.map(UserDetailModel::new).orElseThrow(() -> new UsernameNotFoundException("Invalid Username"));
-		return User.withUsername(loginEntity.getUsername()).password(loginEntity.getPassword()).roles(loginEntity.getRoles()).build();
+		return User.withUsername(loginEntity.getUsername()).password(loginEntity.getPassword())
+				.roles(loginEntity.getRoles()).build();
 	}
-	
+
 }

@@ -52,8 +52,8 @@ public class LoginEntity {
 
 	@Override
 	public String toString() {
-		return "LoginEntity [idLogin=" + id + ", username=" + username + ", password=" + password + ", roles="
-				+ roles + "]";
+		return "LoginEntity [idLogin=" + id + ", username=" + username + ", password=" + password + ", roles=" + roles
+				+ "]";
 	}
 
 }

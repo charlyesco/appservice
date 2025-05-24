@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ErrorController {
 	@PreAuthorize("hasAuthority('USER')")
-	 @GetMapping("/error")
-	    public String home(){
-	        return "Hello World!";
-	    }
-
+	@GetMapping("/error")
+	public String home() {
+		return "Hello World!";
+	}
 }
