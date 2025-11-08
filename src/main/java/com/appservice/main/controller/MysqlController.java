@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.appservice.main.entity.LoginEntity;
+import com.appservice.main.repository.LoginRepository;
 import com.appservice.main.service.MysqlService;
 import com.appservice.main.util.Util;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,11 +23,15 @@ public class MysqlController {
 	@Autowired
 	MysqlService mysqlService;
 
+	@Autowired
+	LoginRepository loginRepository;
+
 	//sin tag @PreAuthorize el metodo es publico
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/readPersonas")
 	public ResponseEntity<String> readPersonas(Principal principal, Authentication authentication,String hola) {
 		System.out.print("variable: "+hola);
+		LoginEntity user = loginRepository.findUser("user");
 		return ResponseEntity.ok(mysqlService.getPersona());
 	}
 
