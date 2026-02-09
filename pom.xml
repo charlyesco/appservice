@@ -32,6 +32,7 @@
 		<mysql.connector.java>8.0.21</mysql.connector.java>
 		<springboot.starter.data.jpa>3.4.0</springboot.starter.data.jpa>
 		<springdoc.openapi.starter>2.0.2</springdoc.openapi.starter>
+		<org-aspectjweaver>1.9.25</org-aspectjweaver>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -76,6 +77,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>${org-aspectjweaver}</version>
+<!--		    <scope>runtime</scope>-->
 		</dependency>
 	</dependencies>
 
