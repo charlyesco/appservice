@@ -1,13 +1,14 @@
 node {
     def WORKSPACE = "/var/lib/jenkins/workspace/springboot-deploy"
-    def dockerHome = tool name: 'docker'
-    println "DEBUG: dockerHome is ${dockerHome}"
+    def dockerHome = tool name: 'docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+    println "DEBUG: dockerHome is '${dockerHome}'"
     def dockerImageTag = "springboot-deploy${env.BUILD_NUMBER}"
     try{
 //          notifyBuild('STARTED')
          stage('Debug Info') {
              sh "echo PATH is: \$PATH"
-             sh "ls -R ${dockerHome} || true"
+             sh "ls -la /var/jenkins_home/tools || true"
+             sh "ls -la ${dockerHome ?: '/var/jenkins_home/tools/docker'} || true"
          }
          stage('Clone Repo') {
             // for display purposes
