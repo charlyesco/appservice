@@ -1,15 +1,12 @@
 node {
     def WORKSPACE = "/var/lib/jenkins/workspace/springboot-deploy"
     def dockerHome = tool name: 'docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+    def mvnHome = tool name: 'maven3', type: 'maven'
     println "DEBUG: dockerHome is '${dockerHome}'"
+    println "DEBUG: mvnHome is '${mvnHome}'"
     def dockerImageTag = "springboot-deploy${env.BUILD_NUMBER}"
     try{
 //          notifyBuild('STARTED')
-         stage('Debug Info') {
-             sh "echo PATH is: \$PATH"
-             sh "ls -la /var/jenkins_home/tools || true"
-             sh "ls -la ${dockerHome ?: '/var/jenkins_home/tools/docker'} || true"
-         }
          stage('Clone Repo') {
             // for display purposes
             // Get some code from a GitHub repository
@@ -18,8 +15,7 @@ node {
                 branch: 'develop'
          }
           stage('Build App') {
-              sh "chmod +x mvnw || true"
-              sh "./mvnw clean package -DskipTests || mvn clean package -DskipTests"
+              sh "${mvnHome}/bin/mvn clean package -DskipTests"
           }
           stage('Build docker') {
               withEnv(["PATH+DOCKER=${dockerHome}/bin"]) {
