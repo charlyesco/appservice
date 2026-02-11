@@ -30,7 +30,7 @@ pipeline {
                 PATH = "${env.DOCKER_HOME}/bin:${env.PATH}"
             }
             steps {
-                sh "docker build -t springboot-deploy:${env.BUILD_NUMBER} ."
+                sh "docker build -t app-service:${env.BUILD_NUMBER} ."
             }
         }
 
@@ -51,7 +51,7 @@ pipeline {
                     -e DB_HOST='MyDatabase' \
                     -e DB_USER_NAME='root' \
                     -e DB_PASSWORD='ESCORIAL' \
-                    -d -p 8080:8080 springboot-deploy:${env.BUILD_NUMBER}"""
+                    -d -p 8080:8080 app-service:${env.BUILD_NUMBER}"""
             }
         }
     }
