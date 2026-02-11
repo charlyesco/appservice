@@ -23,8 +23,17 @@ node {
               }
               stage('Deploy docker'){
                       echo "Docker Image Tag Name: ${dockerImageTag}"
-                      sh "docker stop app-service || true && docker rm app-service || true"
-                      sh "docker run --name app-service -d -p 8080:8080 springboot-deploy:${env.BUILD_NUMBER}"
+                      // Intentamos parar tanto el nombre simple como el de Compose
+                      sh "docker stop workspace-app-service-1 workspace/app-service app-service || true"
+                      sh "docker rm workspace-app-service-1 workspace/app-service app-service || true"
+                      // Lanzamos con las variables de entorno necesarias para la base de datos
+                      sh """docker run --name workspace-app-service-1 \
+                            --network workspace_default \
+                            -e DB_URL='jdbc:mysql://MyDatabase:3306/MyDatabase?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true' \
+                            -e DB_HOST='MyDatabase' \
+                            -e DB_USER_NAME='root' \
+                            -e DB_PASSWORD='ESCORIAL' \
+                            -d -p 8080:8080 springboot-deploy:${env.BUILD_NUMBER}"""
               }
           }
     }catch(e){
