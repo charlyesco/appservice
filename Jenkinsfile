@@ -17,6 +17,10 @@ node {
                 credentialsId: 'charlyesco',
                 branch: 'develop'
          }
+          stage('Build App') {
+              sh "chmod +x mvnw || true"
+              sh "./mvnw clean package -DskipTests || mvn clean package -DskipTests"
+          }
           stage('Build docker') {
               withEnv(["PATH+DOCKER=${dockerHome}/bin"]) {
                  sh "docker build -t springboot-deploy:${env.BUILD_NUMBER} ."
