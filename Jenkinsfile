@@ -17,15 +17,15 @@ node {
           stage('Build App') {
               sh "${mvnHome}/bin/mvn clean package -DskipTests"
           }
-          stage('Build docker') {
-              withEnv(["PATH+DOCKER=${dockerHome}/bin"]) {
-                 sh "docker build -t springboot-deploy:${env.BUILD_NUMBER} ."
+          withEnv(["PATH+DOCKER=${dockerHome}/bin"]) {
+              stage('Build docker') {
+                  sh "docker build -t springboot-deploy:${env.BUILD_NUMBER} ."
               }
-          }
-          stage('Deploy docker'){
-                  echo "Docker Image Tag Name: ${dockerImageTag}"
-                  sh "docker stop springboot-deploy || true && docker rm springboot-deploy || true"
-                  sh "docker run --name springboot-deploy -d -p 8081:8081 springboot-deploy:${env.BUILD_NUMBER}"
+              stage('Deploy docker'){
+                      echo "Docker Image Tag Name: ${dockerImageTag}"
+                      sh "docker stop springboot-deploy || true && docker rm springboot-deploy || true"
+                      sh "docker run --name springboot-deploy -d -p 8081:8080 springboot-deploy:${env.BUILD_NUMBER}"
+              }
           }
     }catch(e){
 //         currentBuild.result = "FAILED"
