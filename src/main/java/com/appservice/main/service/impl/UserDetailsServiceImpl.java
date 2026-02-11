@@ -21,9 +21,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// Cargamos el usuarios y vemos si tiene privilegios
 		List<LoginEntity> user = loginRepository.findByUsername(username);
+
+		if (user.isEmpty()) {
+			throw new UsernameNotFoundException("Usuario no encontrado en la base de datos: " + username);
+		}
+
 		LoginEntity loginEntity = user.get(0);
 		loginEntity.setPassword(Util.encondePass(loginEntity.getPassword()));
-//		return user.map(UserDetailModel::new).orElseThrow(() -> new UsernameNotFoundException("Invalid Username"));
+		// return user.map(UserDetailModel::new).orElseThrow(() -> new
+		// UsernameNotFoundException("Invalid Username"));
 		return User.withUsername(loginEntity.getUsername()).password(loginEntity.getPassword())
 				.roles(loginEntity.getRoles()).build();
 	}

@@ -26,6 +26,11 @@ public class MysqlServiceImpl implements MysqlService {
 		} catch (Exception e) {
 			return "Error: " + e;
 		}
+
+		if (list == null || list.isEmpty()) {
+			return "OK: No se han encontrado registros en la tabla Personas.";
+		}
+
 		return "OK: " + list.get(0).toString();
 	}
 
