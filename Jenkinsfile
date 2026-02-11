@@ -21,14 +21,12 @@ pipeline {
 
         stage('Build App') {
             steps {
-                // El plugin de Maven ya pone 'mvn' en el PATH automáticamente al usar 'tools'
                 sh "mvn clean package -DskipTests"
             }
         }
 
         stage('Build Docker') {
             environment {
-                // Añadimos Docker al PATH para esta etapa y la siguiente
                 PATH = "${env.DOCKER_HOME}/bin:${env.PATH}"
             }
             steps {
@@ -42,11 +40,9 @@ pipeline {
             }
             steps {
                 echo "Desplegando versión: ${env.BUILD_NUMBER}"
-                // Limpieza de contenedores antiguos
                 sh "docker stop workspace-app-service-1 workspace/app-service app-service || true"
                 sh "docker rm workspace-app-service-1 workspace/app-service app-service || true"
                 
-                // Lanzamiento con red, etiquetas de ordenación y variables de entorno
                 sh """docker run --name workspace-app-service-1 \
                     --network workspace_default \
                     --label com.docker.compose.project=workspace \
@@ -62,25 +58,7 @@ pipeline {
 
     post {
         always {
-            script {
-                // notifyBuild(currentBuild.result)
-            }
+            echo "Pipeline finalizado."
         }
     }
-}
-
-def notifyBuild(String buildStatus = 'STARTED'){
-// build status of null means successful
-  buildStatus =  buildStatus ?: 'SUCCESSFUL'
-  // Default values
-  def colorName = 'RED'
-  def colorCode = '#FF0000'
-  def now = new Date()
-  // message
-  def subject = "${buildStatus}, Job: ${env.JOB_NAME} FRONTEND - Deployment Sequence: [${env.BUILD_NUMBER}] "
-  def summary = "${subject} - Check On: (${env.BUILD_URL}) - Time: ${now}"
-  def subject_email = "Spring boot Deployment"
-  def details = """<p>${buildStatus} JOB </p>
-    <p>Job: ${env.JOB_NAME} - Deployment Sequence: [${env.BUILD_NUMBER}] - Time: ${now}</p>
-    <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"</p>"""
 }
