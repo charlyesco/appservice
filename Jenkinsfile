@@ -11,7 +11,7 @@ node {
                 branch: 'develop'
          }
           stage('Build docker') {
-                 dockerImage = docker.build("springboot-deploy:${env.BUILD_NUMBER}")
+                 sh "docker build -t springboot-deploy:${env.BUILD_NUMBER} ."
           }
           stage('Deploy docker'){
                   echo "Docker Image Tag Name: ${dockerImageTag}"
