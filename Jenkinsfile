@@ -1,5 +1,7 @@
 node {
     def WORKSPACE = "/var/lib/jenkins/workspace/springboot-deploy"
+    def dockerHome = tool name: 'docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+    env.PATH = "${dockerHome}/bin:${env.PATH}"
     def dockerImageTag = "springboot-deploy${env.BUILD_NUMBER}"
     try{
 //          notifyBuild('STARTED')
