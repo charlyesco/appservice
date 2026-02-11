@@ -29,6 +29,8 @@ node {
                       // Lanzamos con las variables de entorno necesarias para la base de datos
                       sh """docker run --name workspace-app-service-1 \
                             --network workspace_default \
+                            --label com.docker.compose.project=workspace \
+                            --label com.docker.compose.service=app-service \
                             -e DB_URL='jdbc:mysql://MyDatabase:3306/MyDatabase?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true' \
                             -e DB_HOST='MyDatabase' \
                             -e DB_USER_NAME='root' \
