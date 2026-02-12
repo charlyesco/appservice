@@ -27,7 +27,8 @@ public class MongoDaoImpl implements MongoDao {
         headers.setContentType(MediaType.APPLICATION_JSON);
         // headers.set("my-id", "profe-test");
 
-        String url = mongoServiceUrl + "/mongoservice/personas/findByIdPersona/" + id;
+        // url para docker
+        String url = mongoServiceUrl + "http://app-mongo-service:8080/mongoservice/personas/findByIdPersona/" + id;
 
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
