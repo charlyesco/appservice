@@ -4,7 +4,7 @@ import com.appservice.main.entity.LoginEntity;
 
 public interface MysqlService {
 
-	String getPersona();
+	String getPersona(Integer id);
 
 	boolean insertLogin(LoginEntity persona);
 

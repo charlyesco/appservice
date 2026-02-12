@@ -19,19 +19,19 @@ public class MysqlServiceImpl implements MysqlService {
 	private LoginRepository loginRepository;
 
 	@Override
-	public String getPersona() {
-		List<PersonaEntity> list = null;
+	public String getPersona(Integer id) {
+		PersonaEntity persona = null;
 		try {
-			list = personasRepository.findAll();
+			persona = personasRepository.findByIdPersona(id);
 		} catch (Exception e) {
 			return "Error: " + e;
 		}
 
-		if (list == null || list.isEmpty()) {
+		if (persona == null) {
 			return "OK: No se han encontrado registros en la tabla Personas.";
 		}
 
-		return "OK: " + list.get(0).toString();
+		return "OK: " + persona.toString();
 	}
 
 	@Override
