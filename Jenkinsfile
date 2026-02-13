@@ -62,10 +62,15 @@ pipeline {
                 
                 sh """
                     cd app-service
-                    /tmp/docker-compose -p workspace down 2>/dev/null || true
-                    docker network rm workspace_app-network 2>/dev/null || true
-                    docker network rm workspace_mongo-network 2>/dev/null || true
-                    /tmp/docker-compose -p workspace up -d
+                    /tmp/docker-compose -p app-service down 2>/dev/null || true
+                    docker network rm app-service_app-network 2>/dev/null || true
+                    docker network rm app-service_mongo-network 2>/dev/null || true
+                    
+                    # Liberar puertos
+                    docker stop \$(docker ps -q -f name=MyDatabase) 2>/dev/null || true
+                    docker rm -f \$(docker ps -aq -f name=MyDatabase) 2>/dev/null || true
+                    
+                    /tmp/docker-compose -p app-service up -d
                 """
             }
         }
