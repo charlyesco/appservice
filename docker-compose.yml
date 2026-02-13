@@ -40,10 +40,8 @@ services:
         - app-network
 
   app-mongo-service:
-    build:
-      context: ../app-mongo-service
-      dockerfile: Dockerfile
     container_name: app-mongo-service
+    image: app-mongo-service:latest
     restart: always
     ports:
       - "8081:8080"

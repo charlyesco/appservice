@@ -11,26 +11,17 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repos') {
+        stage('Clone Repo') {
             steps {
-                echo "Clonando repositorios..."
-                sh 'rm -rf app-service app-mongo-service'
                 git url: 'https://github.com/charlyesco/appservice.git',
                     credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
                     branch: 'develop'
-                sh 'git clone https://github.com/charlyesco/app-mongo-service.git ../app-mongo-service || git clone https://github.com/charlyesco/app-mongo-service.git'
             }
         }
 
         stage('Build App') {
             steps {
-                sh "cd app-service && mvn clean package -DskipTests"
-            }
-        }
-
-        stage('Build app-mongo-service') {
-            steps {
-                sh "cd app-mongo-service && mvn clean package -DskipTests || echo 'app-mongo-service build skipped'"
+                sh "mvn clean package -DskipTests"
             }
         }
 
@@ -62,7 +53,7 @@ pipeline {
                     /tmp/docker-compose -p workspace down 2>/dev/null || true
                     
                     # Construir y desplegar con proyecto workspace
-                    cd app-service && /tmp/docker-compose -p workspace up --build -d
+                    /tmp/docker-compose -p workspace up --build -d
                 """
             }
         }
