@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  app-service:
+    build: .   #ubicacion del dokerfile
+    container_name: app-service
+    mem_limit: 512m
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+        DB_URL: jdbc:mysql://MyDatabase:3306/MyDatabase?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+        DB_HOST: MyDatabase
+        DB_USER_NAME: root
+        DB_PASSWORD: ESCORIAL
+        APP_MONGO_SERVICE_URL: http://app-mongo-service:8080
+    depends_on:
+        MyDatabase:
+            condition: service_healthy
+    networks:
+        - app-network
+        - mongo-network
+  MyDatabase:
+    image: mysql:8.0.21
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: ESCORIAL
+        MYSQL_PASSWORD: ESCORIAL
+        MYSQL_DATABASE: MyDatabase
+        MYSQL_HOST: MyDatabase
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        timeout: 10s
+        retries: 3
+    networks:
+        - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
+  mongo-network:
+    external: true
+    name: app-mongo-service_app-network
