@@ -24,15 +24,52 @@ pipeline {
             }
         }
 
+        stage('Build Docker') {
+            environment {
+                PATH = "${env.DOCKER_HOME}/bin:${env.PATH}"
+            }
+            steps {
+                sh "docker build -t app-service:${env.BUILD_NUMBER} ."
+            }
+        }
+
         stage('Deploy Docker') {
             environment {
                 PATH = "${env.DOCKER_HOME}/bin:${env.PATH}"
             }
             steps {
                 echo "Desplegando versión: ${env.BUILD_NUMBER}"
-                // Usar docker compose (sin guion) desde el directorio actual
-                sh "docker compose -f docker-compose.yml build --no-cache app-service"
-                sh "docker compose -f docker-compose.yml up -d app-service"
+                
+                // Crear red si no existe
+                sh "docker network create workspace_app-network 2>/dev/null || true"
+                
+                // Verificar si MySQL está corriendo, si no, iniciarlo
+                sh """
+                    if ! docker ps | grep -q MyDatabase; then
+                        echo "Iniciando MySQL..."
+                        docker run -d --name MyDatabase \
+                            --network workspace_app-network \
+                            -e MYSQL_ROOT_PASSWORD=ESCORIAL \
+                            -e MYSQL_DATABASE=MyDatabase \
+                            -e MYSQL_PASSWORD=ESCORIAL \
+                            -p 3307:3306 \
+                            mysql:8.0.21
+                        sleep 30
+                    fi
+                """
+                
+                // Detener y eliminar contenedor anterior si existe
+                sh "docker stop workspace-app-service-1 2>/dev/null || true"
+                sh "docker rm workspace-app-service-1 2>/dev/null || true"
+                
+                // Ejecutar nuevo contenedor
+                sh """docker run --name workspace-app-service-1 \
+                    --network workspace_app-network \
+                    -e DB_URL='jdbc:mysql://MyDatabase:3306/MyDatabase?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true' \
+                    -e DB_HOST='MyDatabase' \
+                    -e DB_USER_NAME='root' \
+                    -e DB_PASSWORD='ESCORIAL' \
+                    -d -p 8080:8080 app-service:${env.BUILD_NUMBER}"""
             }
         }
     }
