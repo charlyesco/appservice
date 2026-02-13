@@ -8,25 +8,26 @@ pipeline {
     environment {
         DOCKER_HOME = tool name: 'docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
         DOCKER_COMPOSE_VERSION = '2.23.0'
+        WORKSPACE_DIR = "${env.WORKSPACE}"
     }
 
     stages {
         stage('Clone Repos') {
             steps {
                 echo "Clonando repositorios..."
-                sh 'rm -rf workspace && mkdir workspace'
-                dir('workspace') {
+                sh 'rm -rf app-mongo-service'
+                dir('app-service') {
                     git url: 'https://github.com/charlyesco/appservice.git',
                         credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
                         branch: 'develop'
-                    sh 'git clone https://github.com/charlyesco/app-mongo-service.git app-mongo-service'
                 }
+                sh 'git clone https://github.com/charlyesco/app-mongo-service.git app-mongo-service'
             }
         }
 
         stage('Build App') {
             steps {
-                dir('workspace/app-service') {
+                dir('app-service') {
                     sh "mvn clean package -DskipTests"
                 }
             }
@@ -34,9 +35,16 @@ pipeline {
 
         stage('Build app-mongo-service') {
             steps {
-                dir('workspace/app-mongo-service') {
+                dir('app-mongo-service') {
                     sh "mvn clean package -DskipTests || echo 'Build skipped'"
                 }
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh "docker build -t app-service:latest app-service/"
+                sh "docker build -t app-mongo-service:latest app-mongo-service/"
             }
         }
 
@@ -63,9 +71,8 @@ pipeline {
                 echo "Desplegando versión: ${env.BUILD_NUMBER}"
                 
                 sh """
-                    cd workspace/app-service
                     /tmp/docker-compose -p workspace down 2>/dev/null || true
-                    /tmp/docker-compose -p workspace up --build -d
+                    /tmp/docker-compose -p workspace up -d
                 """
             }
         }
