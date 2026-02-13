@@ -17,7 +17,7 @@ public class MongoDaoImpl implements MongoDao {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${app.mongo-service.url:http://localhost:8081}")
+    @Value("${app.mongo-service.url:http://app-mongo-service:8081}")
     private String mongoServiceUrl;
 
     @Override
@@ -27,8 +27,10 @@ public class MongoDaoImpl implements MongoDao {
         headers.setContentType(MediaType.APPLICATION_JSON);
         // headers.set("my-id", "profe-test");
 
+        System.out.println("mongoServiceUrl: " + mongoServiceUrl);
+
         // url para docker
-        String url = mongoServiceUrl + "http://app-mongo-service:8080/mongoservice/personas/findByIdPersona/" + id;
+        String url = mongoServiceUrl + "/mongoservice/personas/findByIdPersona/" + id;
 
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
