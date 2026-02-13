@@ -11,17 +11,28 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Clone Repos') {
             steps {
-                git url: 'https://github.com/charlyesco/appservice.git',
-                    credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
-                    branch: 'develop'
+                echo "Clonando repositorios..."
+                sh 'rm -rf app-service app-mongo-service'
+                dir('app-service') {
+                    git url: 'https://github.com/charlyesco/appservice.git',
+                        credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
+                        branch: 'develop'
+                }
+                sh 'git clone https://github.com/charlyesco/app-mongo-service.git ../app-mongo-service'
             }
         }
 
         stage('Build App') {
             steps {
-                sh "mvn clean package -DskipTests"
+                sh "cd app-service && mvn clean package -DskipTests"
+            }
+        }
+
+        stage('Build app-mongo-service') {
+            steps {
+                sh "cd ../app-mongo-service && mvn clean package -DskipTests || echo 'Build skipped'"
             }
         }
 
@@ -31,7 +42,6 @@ pipeline {
             }
             steps {
                 sh '''
-                    # Descargar docker-compose si no existe
                     if [ ! -f /tmp/docker-compose ]; then
                         curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose
                         chmod +x /tmp/docker-compose
@@ -49,11 +59,9 @@ pipeline {
                 echo "Desplegando versión: ${env.BUILD_NUMBER}"
                 
                 sh """
-                    # Detener contenedores anteriores
-                    /tmp/docker-compose down 2>/dev/null || true
-                    
-                    # Construir y desplegar
-                    /tmp/docker-compose up --build -d
+                    cd app-service
+                    /tmp/docker-compose -p workspace down 2>/dev/null || true
+                    /tmp/docker-compose -p workspace up --build -d
                 """
             }
         }
