@@ -14,25 +14,29 @@ pipeline {
         stage('Clone Repos') {
             steps {
                 echo "Clonando repositorios..."
-                sh 'rm -rf app-service'
-                dir('app-service') {
+                sh 'rm -rf workspace && mkdir workspace'
+                dir('workspace') {
                     git url: 'https://github.com/charlyesco/appservice.git',
                         credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
                         branch: 'develop'
+                    sh 'git clone https://github.com/charlyesco/app-mongo-service.git app-mongo-service'
                 }
-                sh 'rm -rf ../app-mongo-service && git clone https://github.com/charlyesco/app-mongo-service.git ../app-mongo-service'
             }
         }
 
         stage('Build App') {
             steps {
-                sh "cd app-service && mvn clean package -DskipTests"
+                dir('workspace/app-service') {
+                    sh "mvn clean package -DskipTests"
+                }
             }
         }
 
         stage('Build app-mongo-service') {
             steps {
-                sh "cd ../app-mongo-service && mvn clean package -DskipTests || echo 'Build skipped'"
+                dir('workspace/app-mongo-service') {
+                    sh "mvn clean package -DskipTests || echo 'Build skipped'"
+                }
             }
         }
 
@@ -59,7 +63,7 @@ pipeline {
                 echo "Desplegando versión: ${env.BUILD_NUMBER}"
                 
                 sh """
-                    cd app-service
+                    cd workspace/app-service
                     /tmp/docker-compose -p workspace down 2>/dev/null || true
                     /tmp/docker-compose -p workspace up --build -d
                 """
