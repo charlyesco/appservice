@@ -17,7 +17,7 @@ public class MongoDaoImpl implements MongoDao {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${app.mongo-service.url:http://app-mongo-service:8081}")
+    @Value("${app.mongo-service.url:http://app-mongo-service:8080}")
     private String mongoServiceUrl;
 
     @Override
