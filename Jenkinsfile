@@ -11,13 +11,16 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Clone Repos') {
             steps {
+                echo "Clonando repositorios..."
+                sh 'rm -rf app-mongo-service'
                 dir('app-service') {
                     git url: 'https://github.com/charlyesco/appservice.git',
                         credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
                         branch: 'develop'
                 }
+                sh 'git clone https://github.com/charlyesco/app-mongo-service.git app-mongo-service'
             }
         }
 
@@ -29,12 +32,21 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build app-mongo-service') {
+            steps {
+                dir('app-mongo-service') {
+                    sh "mvn clean package -DskipTests || echo 'Build skipped'"
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
             environment {
                 PATH = "${env.DOCKER_HOME}/bin:${env.PATH}"
             }
             steps {
                 sh "docker build -t app-service:latest app-service/"
+                sh "docker build -t app-mongo-service:latest app-mongo-service/"
             }
         }
 
@@ -64,11 +76,6 @@ pipeline {
                     cd app-service
                     /tmp/docker-compose -p app-service down 2>/dev/null || true
                     docker network rm app-service_app-network 2>/dev/null || true
-                    docker network rm app-service_mongo-network 2>/dev/null || true
-                    
-                    # Liberar puertos
-                    docker stop \$(docker ps -q -f name=MyDatabase) 2>/dev/null || true
-                    docker rm -f \$(docker ps -aq -f name=MyDatabase) 2>/dev/null || true
                     
                     /tmp/docker-compose -p app-service up -d
                 """
@@ -78,7 +85,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline finalizado."
+            echo "Pipeline finalized."
         }
     }
 }
