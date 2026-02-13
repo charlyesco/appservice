@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   app-service:
-    build: .
+    image: app-service:latest
     container_name: app-service
     mem_limit: 512m
     restart: always
@@ -41,9 +41,7 @@ services:
       - app-network
 
   app-mongo-service:
-    build:
-      context: ../app-mongo-service
-      dockerfile: Dockerfile
+    image: app-mongo-service:latest
     container_name: app-mongo-service
     restart: always
     ports:
