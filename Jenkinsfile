@@ -50,10 +50,10 @@ pipeline {
                 
                 sh """
                     # Detener contenedores anteriores
-                    /tmp/docker-compose -p workspace down 2>/dev/null || true
+                    /tmp/docker-compose down 2>/dev/null || true
                     
-                    # Construir y desplegar con proyecto workspace
-                    /tmp/docker-compose -p workspace up --build -d
+                    # Construir y desplegar
+                    /tmp/docker-compose up --build -d
                 """
             }
         }
