@@ -42,6 +42,9 @@ pipeline {
         }
 
         stage('Build Docker Images') {
+            environment {
+                PATH = "${env.DOCKER_HOME}/bin:${env.PATH}"
+            }
             steps {
                 sh "docker build -t app-service:latest app-service/"
                 sh "docker build -t app-mongo-service:latest app-mongo-service/"
