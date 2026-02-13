@@ -30,9 +30,9 @@ pipeline {
             }
             steps {
                 echo "Desplegando versión: ${env.BUILD_NUMBER}"
-                // Usar docker-compose desde el directorio actual
-                sh "docker-compose -f docker-compose.yml build --no-cache app-service"
-                sh "docker-compose -f docker-compose.yml up -d app-service"
+                // Usar docker compose (sin guion) desde el directorio actual
+                sh "docker compose -f docker-compose.yml build --no-cache app-service"
+                sh "docker compose -f docker-compose.yml up -d app-service"
             }
         }
     }
