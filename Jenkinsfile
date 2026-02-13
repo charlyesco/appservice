@@ -14,13 +14,13 @@ pipeline {
         stage('Clone Repos') {
             steps {
                 echo "Clonando repositorios..."
-                sh 'rm -rf app-service app-mongo-service'
+                sh 'rm -rf app-service'
                 dir('app-service') {
                     git url: 'https://github.com/charlyesco/appservice.git',
                         credentialsId: 'adf167c5-19f2-4d5a-be83-c15e7d1f7143',
                         branch: 'develop'
                 }
-                sh 'git clone https://github.com/charlyesco/app-mongo-service.git ../app-mongo-service'
+                sh 'rm -rf ../app-mongo-service && git clone https://github.com/charlyesco/app-mongo-service.git ../app-mongo-service'
             }
         }
 
