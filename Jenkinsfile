@@ -77,6 +77,12 @@ pipeline {
                     /tmp/docker-compose -p app-service down 2>/dev/null || true
                     docker network rm app-service_app-network 2>/dev/null || true
                     
+                    # Liberar puertos y contenedores
+                    docker rm -f \$(docker ps -aq -f name=mongodb) 2>/dev/null || true
+                    docker rm -f \$(docker ps -aq -f name=MyDatabase) 2>/dev/null || true
+                    docker rm -f \$(docker ps -aq -f name=app-service) 2>/dev/null || true
+                    docker rm -f \$(docker ps -aq -f name=app-mongo-service) 2>/dev/null || true
+                    
                     /tmp/docker-compose -p app-service up -d
                 """
             }
